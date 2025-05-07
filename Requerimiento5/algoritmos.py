@@ -5,6 +5,12 @@ from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 
 from normalizacion5 import preprocess
 
+"""
+Esta clase se encarga de calcular la similitud entre abstracts utilizando diferentes métodos.
+El objetivo es facilitar el análisis de similitud entre documentos y la creación de clusters.
+Ademas que permite calcular la similitud entre abstracts utilizando el modelo TF-IDF y el modelo Doc2Vec."""
+
+
 # Función para calcular la similitud TF-IDF
 # Esta función calcula la similitud entre abstracts utilizando el modelo TF-IDF.
 def tfidf_similarity(abstracts):

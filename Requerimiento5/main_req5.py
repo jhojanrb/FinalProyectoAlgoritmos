@@ -4,9 +4,9 @@ import time
 
 from normalizacion5 import parse_large_bib, load_bibtex, preprocess
 from algoritmos import tfidf_similarity, doc2vec_similarity
-from dendograma import create_dendrogram, create_sampled_dendrogram
+from dendograma import create_sampled_dendrogram
 from procesamiento import batch_tfidf_similarity, calculate_clusters, compare_models_and_save
-from guardados import save_batch_results, save_cluster_summary_to_csv
+from guardados import save_cluster_summary_to_csv
 
 
 nltk.download('stopwords') # Descargar stopwords

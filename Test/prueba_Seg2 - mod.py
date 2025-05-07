@@ -20,9 +20,15 @@ from scipy.spatial.distance import pdist
 import pandas as pd
 
 
-nltk.download('stopwords')
-nltk.download('wordnet')
+nltk.download('stopwords') # Descargar stopwords
+# WordNet es una base de datos léxica del inglés que agrupa palabras en conjuntos de sinónimos (synsets), 
+# proporcionando definiciones y ejemplos de uso.
+nltk.download('wordnet') # Descargar wordnet
 
+# ------------------------ NORMALIZACION ------------------------ #
+
+# Funcion encargada de analizar archivos BibTeX grandes
+# y extraer los campos relevantes, incluyendo el manejo de campos complejos
 def parse_large_bib(file_path):
     """Analiza archivos BibTeX grandes con manejo mejorado de campos y tipos"""
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -64,16 +70,16 @@ def parse_large_bib(file_path):
     
     return entries
 
-# Paso 3: Cargar el archivo BibTeX y extraer abstracts
+# Cargar el archivo BibTeX y extraer abstracts
 def load_bibtex(file_path):
     """Carga el archivo BibTeX usando nuestro parser personalizado"""
     entries = parse_large_bib(file_path)
     
-    abstracts = []
+    abstracts = [] # Lista para almacenar abstracts
     for entry in entries:
         # Buscar abstract en diferentes variaciones de campo
         abstract = entry.get('abstract') or entry.get('abstr') or entry.get('summary')
-        if abstract and "unknown" not in abstract.lower():  # Filtrar "Unknown" (case insensitive)
+        if abstract and "unknown" not in abstract.lower() and "show more" not in abstract.lower():  # Filtrar "Unknown" y "Show More"(case insensitive)
             abstracts.append(abstract)
     
     print(f"\nSe encontraron {len(abstracts)} abstracts en el archivo.")
@@ -87,12 +93,12 @@ def load_bibtex(file_path):
     return abstracts
 
 
-stop_words = set(stopwords.words('english'))
-lemmatizer = WordNetLemmatizer()
+stop_words = set(stopwords.words('english')) # Cargar stopwords de NLTK
+lemmatizer = WordNetLemmatizer() # Inicializar lematizador de NLTK
 
-# Paso 4: Preprocesar el texto
-# Mantener palabras con números (ej: "VR2") pero eliminar caracteres especiales
-# y lematizar las palabras, eliminar stopwords
+
+# Funcion encargada de preprocesar el texto
+# Mantiene palabras con números (ej: "VR2") pero elimina caracteres especiales
 def preprocess(text):
     # Mantener palabras con números (ej: "VR2") pero eliminar caracteres especiales
     text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
@@ -100,21 +106,25 @@ def preprocess(text):
     # Lematización y filtrado de stopwords
     return [lemmatizer.lemmatize(token) for token in tokens if token not in stop_words]
 
+# --------------------------- ALGORITMOS --------------------------- #
 
+
+# Función para calcular la similitud TF-IDF
+# Esta función calcula la similitud entre abstracts utilizando el modelo TF-IDF.
 def tfidf_similarity(abstracts):
-    processed_abstracts = [' '.join(preprocess(ab)) for ab in abstracts]
+    processed_abstracts = [' '.join(preprocess(ab)) for ab in abstracts] # Preprocesar abstracts
     vectorizer = TfidfVectorizer(
         max_features=5000,       # Limitar el vocabulario a las 5K palabras más frecuentes
         ngram_range=(1, 3),      # Incluir unigramas, bigramas y trigramas
         stop_words='english'     # Eliminar stopwords (redundante con preprocess, pero útil)
     )
-    tfidf_matrix = vectorizer.fit_transform(processed_abstracts)
-    return cosine_similarity(tfidf_matrix)
+    tfidf_matrix = vectorizer.fit_transform(processed_abstracts) # Calcular matriz TF-IDF
+    return cosine_similarity(tfidf_matrix) 
 
-
-
+# Función para calcular la similitud Doc2Vec
+# Esta función utiliza el modelo Doc2Vec para calcular la similitud entre abstracts.
 def doc2vec_similarity(abstracts, save_model=True):
-    tagged_data = [TaggedDocument(preprocess(ab), [str(i)]) for i, ab in enumerate(abstracts)]
+    tagged_data = [TaggedDocument(preprocess(ab), [str(i)]) for i, ab in enumerate(abstracts)] # Etiquetar documentos
     
     model = Doc2Vec(
         vector_size=100,
@@ -123,13 +133,13 @@ def doc2vec_similarity(abstracts, save_model=True):
         dm=1,
         workers=4                # Paralelizar en 4 núcleos
     )
-    model.build_vocab(tagged_data)
-    model.train(tagged_data, total_examples=model.corpus_count, epochs=model.epochs)
+    model.build_vocab(tagged_data) # Construir vocabulario
+    model.train(tagged_data, total_examples=model.corpus_count, epochs=model.epochs) # Entrenar modelo
     
     if save_model:
         model.save("C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/doc2vec_model.model")  # Guardar modelo para reutilizar
     
-    # Calcular similitud solo para los top N más similares (ej: top 100)
+    # Calcular similitud solo para los top N más similares (ej: top 1000)
     top_n = 1000
     similarity_matrix = []
     for i in range(len(abstracts)):
@@ -138,35 +148,11 @@ def doc2vec_similarity(abstracts, save_model=True):
     
     return similarity_matrix
 
+# -------------------------- PROCESAMIENTO -------------------------- #
 
 
-# Procesar en lotes para evitar problemas de memoria
-# y mejorar la velocidad de cálculo
-def batch_process(abstracts, batch_size=1000): 
-    for i in range(0, len(abstracts), batch_size):
-        batch = abstracts[i:i + batch_size]
-        tfidf_sim_batch = tfidf_similarity(batch)
-        np.save(f"tfidf_sim_batch_{i}.npy", tfidf_sim_batch)
-
-"""def compare_models(abstracts, doc_index=0, top_k=5):
-    # Ejemplo: Comparar los top K abstracts más similares según ambos modelos
-    tfidf_sim = tfidf_similarity(abstracts)
-    doc2vec_sim = doc2vec_similarity(abstracts)
-    
-    print(f"\nAbstract de referencia (índice {doc_index}):")
-    print(abstracts[doc_index][:200] + "...")
-    
-    # Top K según TF-IDF
-    tfidf_top = np.argsort(-tfidf_sim[doc_index])[1:top_k + 1]  # Excluir autosimilitud
-    print("\nTop similares (TF-IDF):")
-    for idx in tfidf_top:
-        print(f"Índice {idx}: Sim={tfidf_sim[doc_index][idx]:.3f} - {abstracts[idx][:100]}...")
-    
-    # Top K según Doc2Vec
-    print("\nTop similares (Doc2Vec):")
-    for idx, sim in doc2vec_sim[doc_index][:top_k]:
-        print(f"Índice {int(idx)}: Sim={sim:.3f} - {abstracts[int(idx)][:100]}...")"""
-
+# Función para comparar modelos y guardar resultados
+# Esta función compara los modelos de similitud TF-IDF y Doc2Vec
 def compare_models_and_save(abstracts, top_k=5, tfidf_similarity_func=None, doc2vec_similarity_func=None):
     # Calcular similitudes
     tfidf_sim = tfidf_similarity_func(abstracts)
@@ -209,13 +195,13 @@ def compare_models_and_save(abstracts, top_k=5, tfidf_similarity_func=None, doc2
    
 
     # Guardar las similitudes en archivos CSV
-    tfidf_csv = "C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/tfidf_similarities.csv"
-    doc2vec_csv = "C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/doc2vec_similarities.csv"
+    #tfidf_csv = "C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/tfidf_similarities.csv"
+    #doc2vec_csv = "C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/doc2vec_similarities.csv"
 
     # TF-IDF: Guardar en formato DataFrame
     tfidf_df = pd.DataFrame(tfidf_sim, columns=[f"Abstract {i}" for i in range(len(abstracts))])
     tfidf_df.insert(0, "Abstract", [f"Abstract {i}" for i in range(len(abstracts))])
-    tfidf_df.to_csv(tfidf_csv, index=False)
+    #tfidf_df.to_csv(tfidf_csv, index=False)
 
     # Doc2Vec: Guardar similitudes
     doc2vec_data = []
@@ -228,21 +214,22 @@ def compare_models_and_save(abstracts, top_k=5, tfidf_similarity_func=None, doc2
             })
 
     doc2vec_df = pd.DataFrame(doc2vec_data)
-    doc2vec_df.to_csv(doc2vec_csv, index=False)
+    #doc2vec_df.to_csv(doc2vec_csv, index=False)
 
-    print(f"\nSimilitudes TF-IDF guardadas en: {tfidf_csv}")
-    print(f"Similitudes Doc2Vec guardadas en: {doc2vec_csv}")
+    print(f"\nSimilitudes TF-IDF guardadas en Requerimiento 5: ")
+    print(f"Similitudes Doc2Vec guardadas en Requerimiento 5: ")
 
 
-    #--------------------------------------------------------------------#
-
-    # Asumiendo que ya tienes la función preprocess definida previamente
+# Funcion encargada de calcular la similitud TF-IDF por lotes de 500
+# para evitar problemas de memoria y mejorar la velocidad de cálculo
 def batch_tfidf_similarity(abstracts, batch_size=500):
     """Calcula similitudes TF-IDF por lotes para ahorrar memoria."""
-    tfidf_matrices = []
-    for i in range(0, len(abstracts), batch_size):
+    tfidf_matrices = [] # Lista para almacenar las matrices de similitud por lotes
+    for i in range(0, len(abstracts), batch_size): # Se divide el procesamiento en lotes
+        # Procesar cada lote de abstracts
         batch = abstracts[i:i + batch_size]
-        processed_batch = [' '.join(preprocess(ab)) for ab in batch]
+        processed_batch = [' '.join(preprocess(ab)) for ab in batch] # Preprocesar los abstracts
+        # Calcular la matriz TF-IDF para el lote
         tfidf_matrix = TfidfVectorizer(max_features=5000, ngram_range=(1, 3), stop_words='english').fit_transform(processed_batch)
         tfidf_matrices.append(tfidf_matrix)
 
@@ -250,78 +237,6 @@ def batch_tfidf_similarity(abstracts, batch_size=500):
     tfidf_combined = vstack(tfidf_matrices)
     return cosine_similarity(tfidf_combined)
 
-
-# Paso 4: Crear dendrograma
-# dendograma completo con todos los documentos
-def create_dendrogram(similarity_matrix, labels=None):
-    """Genera un dendrograma basado en una matriz de similitud."""
-    # Convertir similitud a distancia
-    distance_matrix = 1 - similarity_matrix
-
-    # Forzar simetría
-    distance_matrix = (distance_matrix + distance_matrix.T) / 2
-
-    # Asegurarse de que no haya valores negativos
-    distance_matrix[distance_matrix < 0] = 0
-
-    # Corregir la diagonal
-    np.fill_diagonal(distance_matrix, 0)
-
-    # Convertir a formato adecuado para linkage
-    linkage_matrix = linkage(squareform(distance_matrix), method='ward')
-
-    # Crear el dendrograma
-    plt.figure(figsize=(20, 10))
-    dendrogram(linkage_matrix, labels=None, leaf_rotation=90, leaf_font_size=10)
-    plt.title("Dendrograma de clustering jerárquico")
-    plt.xlabel("Documentos")
-    plt.ylabel("Distancia")
-    plt.savefig("C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/dendrogram.png", dpi=300, bbox_inches='tight')
-
-# dendograma con muestra de documentos
-def create_sampled_dendrogram(similarity_matrix, labels, sample_size=100):
-    """
-    Crea un dendrograma usando una muestra de documentos.
-    :param similarity_matrix: Matriz de similitud original.
-    :param labels: Etiquetas de los documentos.
-    :param sample_size: Tamaño de la muestra (número de documentos a considerar).
-    """
-    total_documents = len(labels)
-    if sample_size > total_documents:
-        sample_size = total_documents
-
-    sampled_indices = np.random.choice(total_documents, size=sample_size, replace=False)
-    sampled_similarity_matrix = similarity_matrix[np.ix_(sampled_indices, sampled_indices)]
-    sampled_labels = [labels[i] for i in sampled_indices]
-
-    # Convertir similitud a distancia
-    distance_matrix = 1 - sampled_similarity_matrix
-    distance_matrix = (distance_matrix + distance_matrix.T) / 2
-    distance_matrix[distance_matrix < 0] = 0
-    np.fill_diagonal(distance_matrix, 0)
-
-    # Generar linkage
-    linkage_matrix = linkage(squareform(distance_matrix), method='ward')
-
-    # Crear gráfico
-    plt.figure(figsize=(20, 10))
-    dendrogram(linkage_matrix, labels=sampled_labels, leaf_rotation=90, leaf_font_size=10)
-    plt.title("Dendrograma de clustering jerárquico (muestra)")
-    plt.xlabel("Documentos")
-    plt.ylabel("Distancia")
-    plt.savefig("C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/sampled_dendrogram100.png", dpi=300, bbox_inches='tight')
-
-def save_batch_results(matrix, batch_index, output_dir):
-    """Guarda resultados por lotes como archivos .npy."""
-    os.makedirs(output_dir, exist_ok=True)
-    file_path = os.path.join(output_dir, f"batch_{batch_index}.npy")
-    np.save(file_path, matrix)
-
-def load_batch_results(output_dir):
-    """Carga y combina resultados de similitud por lotes."""
-    files = sorted([f for f in os.listdir(output_dir) if f.endswith('.npy')])
-    matrices = [np.load(os.path.join(output_dir, f)) for f in files]
-    return np.vstack(matrices)
 
 # Funciones auxiliares para clustering
 def calculate_clusters(similarity_matrix, cutoff_distance):
@@ -354,6 +269,51 @@ def calculate_clusters(similarity_matrix, cutoff_distance):
 
     return clusters, linkage_matrix
 
+
+# ------------------------------------------------ DENDROGRAMAS -------------------------------------------------- #
+
+# Funcion encargada de crear un dendograma a partir de una matriz de similitud
+# y etiquetas de documentos. Esta funcion permite crear un dendograma
+# utilizando una muestra de documentos, lo que es útil para visualizar grandes conjuntos de datos.
+
+def create_sampled_dendrogram(similarity_matrix, labels, sample_size=100):
+    """
+    Crea un dendrograma usando una muestra de documentos.
+    :param similarity_matrix: Matriz de similitud original.
+    :param labels: Etiquetas de los documentos.
+    :param sample_size: Tamaño de la muestra (número de documentos a considerar).
+    """
+    total_documents = len(labels)
+    if sample_size > total_documents:
+        sample_size = total_documents
+
+    sampled_indices = np.random.choice(total_documents, size=sample_size, replace=False) # Seleccionar índices aleatorios
+    sampled_similarity_matrix = similarity_matrix[np.ix_(sampled_indices, sampled_indices)] # Crear submatriz de similitud
+    # Obtener etiquetas de la muestra
+    sampled_labels = [labels[i] for i in sampled_indices]
+
+    # Convertir similitud a distancia
+    distance_matrix = 1 - sampled_similarity_matrix # Convertir a distancia
+    # Forzar simetría
+    distance_matrix = (distance_matrix + distance_matrix.T) / 2
+    distance_matrix[distance_matrix < 0] = 0 # Asegurarse de que no haya valores negativos
+    # Corregir la diagonal
+    np.fill_diagonal(distance_matrix, 0)
+
+    # Generar linkage
+    linkage_matrix = linkage(squareform(distance_matrix), method='ward')
+
+    # Crear gráfico
+    plt.figure(figsize=(20, 10))
+    dendrogram(linkage_matrix, labels=sampled_labels, leaf_rotation=90, leaf_font_size=10)
+    plt.title("Dendrograma de clustering jerárquico (muestra)")
+    plt.xlabel("Documentos")
+    plt.ylabel("Distancia")
+    plt.savefig("C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/sampled_dendrogram100.png", dpi=300, bbox_inches='tight')
+
+# ----------------------------------------------------- GUARDADOS ----------------------------------------------------- #
+
+
 # Función para guardar el resumen de clusters en un archivo CSV
 def save_cluster_summary_to_csv(clusters, abstracts, output_file='C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/cluster_summary.csv'):
     # Crear una lista para almacenar los datos
@@ -374,32 +334,23 @@ def save_cluster_summary_to_csv(clusters, abstracts, output_file='C:/2025-1/Anal
     df.to_csv(output_file, index=False)
     print(f"Resumen de clusters guardado en {output_file}")
 
+    # ---------------------------------------- MAIN ---------------------------------------- #
+
 
 def main():
+    # Cargar y procesar el archivo BibTeX
     file_path = "C:/2025-1/Analisis Algoritmos/Proyecto/Data/unificados.bib"
     abstracts = load_bibtex(file_path)
     print(f"Cargando y procesando {len(abstracts)} abstracts...")
-    output_dir = "C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/similarity_batches"
+    #output_dir = "C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/similarity_batches"
     
-    # Opción 1: Procesamiento completo (requiere recursos)
-    """""
-    start_time = time.time()
-    tfidf_sim = tfidf_similarity(abstracts)
-    print("\nSimilitud TF-IDF calculada.")
-    end_time = time.time()
-    print(f"Tiempo de cálculo TF-IDF: {end_time - start_time:.2f} segundos")
-    start_time = time.time()
-    doc2vec_sim = doc2vec_similarity(abstracts)
-    print("\nSimilitud Doc2Vec calculada.")
-    end_time = time.time()
-    print(f"Tiempo de cálculo Doc2Vec: {end_time - start_time:.2f} segundos")"""
 
-    # Opción 2: Procesamiento por lotes (recomendado para 11K docs)
+    # Procesamiento por lotes batch para los 11k abstracts
     # Procesar similitud por lotes y guardar resultados
     print("Calculando similitud TF-IDF por lotes...")
-    start_time = time.time()
+    start_time = time.time() # Guardar tiempo de inicio
     similarity_matrix = batch_tfidf_similarity(abstracts, batch_size=500)
-    save_batch_results(similarity_matrix, 0, output_dir)
+    #save_batch_results(similarity_matrix, 0, output_dir)
     end_time = time.time()
     print(f"Tiempo de cálculo por lotes: {end_time - start_time:.2f} segundos")
 

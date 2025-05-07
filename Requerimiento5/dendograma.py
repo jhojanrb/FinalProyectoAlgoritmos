@@ -4,6 +4,11 @@ import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import dendrogram, linkage
 from scipy.spatial.distance import squareform
 
+"""
+Esta clase se encarga de crear un dendograma a partir de una matriz de similitud.
+El objetivo es visualizar la estructura jerárquica de los documentos en función de su similitud.
+Ademas que permite crear un dendograma utilizando una muestra de documentos, lo que es útil para visualizar grandes conjuntos de datos.
+"""
 
 
 

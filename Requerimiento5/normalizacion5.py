@@ -6,6 +6,12 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from gensim.utils import simple_preprocess
 
+"""
+Esta clase se encarga de normalizar los abstracts de un archivo BibTeX.
+El objetivo es extraer los abstracts de las entradas y normalizarlos para su posterior análisis.
+Ademas que tambien se encarga de realizar el procesamiento de texto.
+"""
+
 # Funcion encargada de analizar archivos BibTeX grandes
 # y extraer los campos relevantes, incluyendo el manejo de campos complejos
 def parse_large_bib(file_path):

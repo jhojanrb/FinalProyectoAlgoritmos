@@ -2,6 +2,11 @@ import os
 import numpy as np
 import pandas as pd
 
+"""
+Esta clase se encarga de guardar los resultados de los clusters y el resumen de clusters en archivos CSV.
+El objetivo es facilitar el análisis posterior de los resultados obtenidos a partir de los abstracts procesados.
+"""
+
 
 # Función para guardar el resumen de clusters en un archivo CSV
 def save_cluster_summary_to_csv(clusters, abstracts, output_file='C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/cluster_summary.csv'):
