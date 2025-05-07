@@ -11,33 +11,17 @@ from algoritmos import tfidf_similarity, doc2vec_similarity
 from normalizacion5 import load_bibtex, preprocess
 
 
-# Procesar en lotes para evitar problemas de memoria
-# y mejorar la velocidad de cálculo
-def batch_process(abstracts, batch_size=1000): 
-    for i in range(0, len(abstracts), batch_size):
-        batch = abstracts[i:i + batch_size]
-        tfidf_sim_batch = tfidf_similarity(batch)
-        np.save(f"tfidf_sim_batch_{i}.npy", tfidf_sim_batch)
+"""
+En esta clase se implementan las funciones necesarias para el procesamiento de los datos, 
+una de las principales funciones es la de comparar los modelos de similitud TF-IDF y Doc2Vec,
+y guardar los resultados en archivos CSV para una mejor visualización y análisis posterior.
+Además, se implementan funciones auxiliares para el procesamienot por lotes de de similitud TF-IDF,
+y el cálculo de clusters a partir de una matriz de similitud.
 
-"""def compare_models(abstracts, doc_index=0, top_k=5):
-    # Ejemplo: Comparar los top K abstracts más similares según ambos modelos
-    tfidf_sim = tfidf_similarity(abstracts)
-    doc2vec_sim = doc2vec_similarity(abstracts)
-    
-    print(f"\nAbstract de referencia (índice {doc_index}):")
-    print(abstracts[doc_index][:200] + "...")
-    
-    # Top K según TF-IDF
-    tfidf_top = np.argsort(-tfidf_sim[doc_index])[1:top_k + 1]  # Excluir autosimilitud
-    print("\nTop similares (TF-IDF):")
-    for idx in tfidf_top:
-        print(f"Índice {idx}: Sim={tfidf_sim[doc_index][idx]:.3f} - {abstracts[idx][:100]}...")
-    
-    # Top K según Doc2Vec
-    print("\nTop similares (Doc2Vec):")
-    for idx, sim in doc2vec_sim[doc_index][:top_k]:
-        print(f"Índice {int(idx)}: Sim={sim:.3f} - {abstracts[int(idx)][:100]}...")"""
+"""
 
+# Función para comparar modelos y guardar resultados
+# Esta función compara los modelos de similitud TF-IDF y Doc2Vec
 def compare_models_and_save(abstracts, top_k=5, tfidf_similarity_func=None, doc2vec_similarity_func=None):
     # Calcular similitudes
     tfidf_sim = tfidf_similarity_func(abstracts)
@@ -105,24 +89,22 @@ def compare_models_and_save(abstracts, top_k=5, tfidf_similarity_func=None, doc2
     print(f"Similitudes Doc2Vec guardadas en Requerimiento 5: ")
 
 
-    #--------------------------------------------------------------------#
-
-    # Asumiendo que ya tienes la función preprocess definida previamente
+# Funcion encargada de calcular la similitud TF-IDF por lotes de 500
+# para evitar problemas de memoria y mejorar la velocidad de cálculo
 def batch_tfidf_similarity(abstracts, batch_size=500):
     """Calcula similitudes TF-IDF por lotes para ahorrar memoria."""
-    tfidf_matrices = []
-    for i in range(0, len(abstracts), batch_size):
+    tfidf_matrices = [] # Lista para almacenar las matrices de similitud por lotes
+    for i in range(0, len(abstracts), batch_size): # Se divide el procesamiento en lotes
+        # Procesar cada lote de abstracts
         batch = abstracts[i:i + batch_size]
-        processed_batch = [' '.join(preprocess(ab)) for ab in batch]
+        processed_batch = [' '.join(preprocess(ab)) for ab in batch] # Preprocesar los abstracts
+        # Calcular la matriz TF-IDF para el lote
         tfidf_matrix = TfidfVectorizer(max_features=5000, ngram_range=(1, 3), stop_words='english').fit_transform(processed_batch)
         tfidf_matrices.append(tfidf_matrix)
 
     # Combina los lotes en una matriz grande
     tfidf_combined = vstack(tfidf_matrices)
     return cosine_similarity(tfidf_combined)
-
-
-
 
 
 # Funciones auxiliares para clustering
@@ -155,3 +137,32 @@ def calculate_clusters(similarity_matrix, cutoff_distance):
 
 
     return clusters, linkage_matrix
+
+
+    #---------------------------- FUNCIONES ANTERIORES ----------------------------------#
+
+"""
+    def batch_process(abstracts, batch_size=1000): 
+    for i in range(0, len(abstracts), batch_size):
+        batch = abstracts[i:i + batch_size]
+        tfidf_sim_batch = tfidf_similarity(batch)
+        np.save(f"tfidf_sim_batch_{i}.npy", tfidf_sim_batch)"""
+
+"""def compare_models(abstracts, doc_index=0, top_k=5):
+    # Ejemplo: Comparar los top K abstracts más similares según ambos modelos
+    tfidf_sim = tfidf_similarity(abstracts)
+    doc2vec_sim = doc2vec_similarity(abstracts)
+    
+    print(f"\nAbstract de referencia (índice {doc_index}):")
+    print(abstracts[doc_index][:200] + "...")
+    
+    # Top K según TF-IDF
+    tfidf_top = np.argsort(-tfidf_sim[doc_index])[1:top_k + 1]  # Excluir autosimilitud
+    print("\nTop similares (TF-IDF):")
+    for idx in tfidf_top:
+        print(f"Índice {idx}: Sim={tfidf_sim[doc_index][idx]:.3f} - {abstracts[idx][:100]}...")
+    
+    # Top K según Doc2Vec
+    print("\nTop similares (Doc2Vec):")
+    for idx, sim in doc2vec_sim[doc_index][:top_k]:
+        print(f"Índice {int(idx)}: Sim={sim:.3f} - {abstracts[int(idx)][:100]}...")"""

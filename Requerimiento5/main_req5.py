@@ -9,35 +9,26 @@ from procesamiento import batch_tfidf_similarity, calculate_clusters, compare_mo
 from guardados import save_batch_results, save_cluster_summary_to_csv
 
 
-nltk.download('stopwords')
-nltk.download('wordnet')
+nltk.download('stopwords') # Descargar stopwords
+# WordNet es una base de datos léxica del inglés que agrupa palabras en conjuntos de sinónimos (synsets), 
+# proporcionando definiciones y ejemplos de uso.
+nltk.download('wordnet') # Descargar wordnet
 
 
 def main():
+    # Cargar y procesar el archivo BibTeX
     file_path = "C:/2025-1/Analisis Algoritmos/Proyecto/Data/unificados.bib"
     abstracts = load_bibtex(file_path)
     print(f"Cargando y procesando {len(abstracts)} abstracts...")
-    output_dir = "C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/similarity_batches"
+    #output_dir = "C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/similarity_batches"
     
-    # Opción 1: Procesamiento completo (requiere recursos)
-    """""
-    start_time = time.time()
-    tfidf_sim = tfidf_similarity(abstracts)
-    print("\nSimilitud TF-IDF calculada.")
-    end_time = time.time()
-    print(f"Tiempo de cálculo TF-IDF: {end_time - start_time:.2f} segundos")
-    start_time = time.time()
-    doc2vec_sim = doc2vec_similarity(abstracts)
-    print("\nSimilitud Doc2Vec calculada.")
-    end_time = time.time()
-    print(f"Tiempo de cálculo Doc2Vec: {end_time - start_time:.2f} segundos")"""
 
-    # Opción 2: Procesamiento por lotes (recomendado para 11K docs)
+    # Procesamiento por lotes batch para los 11k abstracts
     # Procesar similitud por lotes y guardar resultados
     print("Calculando similitud TF-IDF por lotes...")
-    start_time = time.time()
+    start_time = time.time() # Guardar tiempo de inicio
     similarity_matrix = batch_tfidf_similarity(abstracts, batch_size=500)
-    save_batch_results(similarity_matrix, 0, output_dir)
+    #save_batch_results(similarity_matrix, 0, output_dir)
     end_time = time.time()
     print(f"Tiempo de cálculo por lotes: {end_time - start_time:.2f} segundos")
 
@@ -73,3 +64,19 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+    # ------------------------------------------------ FUNCIONES ANTERIORES --------------------------------------------------#
+
+    # Opción 1: Procesamiento completo (requiere recursos)
+    """
+    start_time = time.time()
+    tfidf_sim = tfidf_similarity(abstracts)
+    print("\nSimilitud TF-IDF calculada.")
+    end_time = time.time()
+    print(f"Tiempo de cálculo TF-IDF: {end_time - start_time:.2f} segundos")
+    start_time = time.time()
+    doc2vec_sim = doc2vec_similarity(abstracts)
+    print("\nSimilitud Doc2Vec calculada.")
+    end_time = time.time()
+    print(f"Tiempo de cálculo Doc2Vec: {end_time - start_time:.2f} segundos")"""

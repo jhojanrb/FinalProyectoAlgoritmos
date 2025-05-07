@@ -6,7 +6,8 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from gensim.utils import simple_preprocess
 
-
+# Funcion encargada de analizar archivos BibTeX grandes
+# y extraer los campos relevantes, incluyendo el manejo de campos complejos
 def parse_large_bib(file_path):
     """Analiza archivos BibTeX grandes con manejo mejorado de campos y tipos"""
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -48,12 +49,12 @@ def parse_large_bib(file_path):
     
     return entries
 
-# Paso 3: Cargar el archivo BibTeX y extraer abstracts
+# Cargar el archivo BibTeX y extraer abstracts
 def load_bibtex(file_path):
     """Carga el archivo BibTeX usando nuestro parser personalizado"""
     entries = parse_large_bib(file_path)
     
-    abstracts = []
+    abstracts = [] # Lista para almacenar abstracts
     for entry in entries:
         # Buscar abstract en diferentes variaciones de campo
         abstract = entry.get('abstract') or entry.get('abstr') or entry.get('summary')
@@ -71,12 +72,12 @@ def load_bibtex(file_path):
     return abstracts
 
 
-stop_words = set(stopwords.words('english'))
-lemmatizer = WordNetLemmatizer()
+stop_words = set(stopwords.words('english')) # Cargar stopwords de NLTK
+lemmatizer = WordNetLemmatizer() # Inicializar lematizador de NLTK
 
-# Paso 4: Preprocesar el texto
-# Mantener palabras con números (ej: "VR2") pero eliminar caracteres especiales
-# y lematizar las palabras, eliminar stopwords
+
+# Funcion encargada de preprocesar el texto
+# Mantiene palabras con números (ej: "VR2") pero elimina caracteres especiales
 def preprocess(text):
     # Mantener palabras con números (ej: "VR2") pero eliminar caracteres especiales
     text = re.sub(r'[^a-zA-Z0-9\s]', '', text)

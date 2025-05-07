@@ -24,14 +24,15 @@ def save_cluster_summary_to_csv(clusters, abstracts, output_file='C:/2025-1/Anal
     print(f"Resumen de clusters guardado en {output_file}")
 
 
+    # ------------------------------ FUNCIONES ANTERIORES ------------------------------#
+
+"""
 def save_batch_results(matrix, batch_index, output_dir):
-    """Guarda resultados por lotes como archivos .npy."""
     os.makedirs(output_dir, exist_ok=True)
     file_path = os.path.join(output_dir, f"batch_{batch_index}.npy")
-    np.save(file_path, matrix)
+    np.save(file_path, matrix) 
 
 def load_batch_results(output_dir):
-    """Carga y combina resultados de similitud por lotes."""
     files = sorted([f for f in os.listdir(output_dir) if f.endswith('.npy')])
     matrices = [np.load(os.path.join(output_dir, f)) for f in files]
-    return np.vstack(matrices)
+    return np.vstack(matrices)"""
