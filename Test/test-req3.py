@@ -15,6 +15,11 @@ import matplotlib.patches as mpatches
 from itertools import combinations
 import matplotlib.patheffects as path_effects
 
+"""
+Esta clase es un test para la realizacion completa del requerimiento 3.
+Esta no se encuentra dividida en modulos, pero se encarga de realizar el flujo completo del requerimiento 3.
+"""
+
 
 # Agregar la carpeta raíz al sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))

@@ -34,30 +34,37 @@ def parse_large_bib(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
     
+    # Expresión regular para encontrar entradas BibTeX
     entry_pattern = re.compile(
         r'@(?P<type>\w+)\s*{\s*(?P<id>[^,\s]+)\s*,\s*'
         r'(?P<fields>(?:[^@]*?)\s*(?=\s*@\w+\s*{|$))',
         re.DOTALL
     )
     
+    # Expresión regular para encontrar campos dentro de una entrada
     field_pattern = re.compile(
         r'(?P<key>\w+)\s*=\s*'
         r'(?P<value>\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})+\}|"[^"]*"|[^,\n]+)\s*,?\s*',
         re.DOTALL
     )
     
-    entries = []
+    entries = [] # Lista para almacenar las entradas BibTeX
+    # Iterar sobre las entradas BibTeX encontradas
     for match in tqdm(entry_pattern.finditer(content), desc="Analizando entradas"):
+        # Extraer tipo y ID de la entrada
         entry = {
             'ENTRYTYPE': match.group('type').lower(),
             'ID': match.group('id').strip()
         }
         
+        # Extraer campos de la entrada
         fields_content = match.group('fields')
+        # Limpiar el contenido de los campos
         for field in field_pattern.finditer(fields_content):
             key = field.group('key').lower()
             value = field.group('value').strip()
             
+            # Manejar campos complejos (ej: {@article})
             if value.startswith('{') and value.endswith('}'):
                 value = value[1:-1]
             elif value.startswith('"') and value.endswith('"'):

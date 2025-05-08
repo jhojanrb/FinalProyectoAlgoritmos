@@ -4,6 +4,7 @@ import os
 # USO DE CHATGPT PARA LA LECTURA CORRECTA DEL BIBTEXT
 # -------------------------------------------------------------
 
+# función para leer archivos BibTeX y convertirlos en una lista de diccionarios
 def read_bibtex(filename):
     """Leer un archivo BibTeX y convertirlo en una lista de diccionarios."""
     articles = []
@@ -32,7 +33,7 @@ def read_bibtex(filename):
 # USO DE CHATGPT PARA INVESTIGAR EL MANEJO DE ARCHIVOS DUPLICADOS Y UNIFICAR
 # -----------------------------------------------------------------------------
 
-
+# función para unificar resultados de varios archivos BibTeX
 def unify_results_from_files(*filenames):
     """Unificar resultados a partir de varios archivos BibTeX."""
     datasets = [read_bibtex(filename) for filename in filenames]

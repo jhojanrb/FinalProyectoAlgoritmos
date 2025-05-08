@@ -1,11 +1,12 @@
-from collections import Counter
-import matplotlib.pyplot as plt
-from wordcloud import WordCloud
-import networkx as nx
 import os
 import sys
-from tqdm import tqdm
 import pandas as pd
+
+""" 
+Esta clase se encarga de guardar las palabras clave en un archivo Excel. 
+Posteriormente, realiza la ejecución del flujo de trabajo, que incluye la carga de abstracts,
+el conteo de palabras clave y la generación de gráficos. Luego los almacena
+"""
 
 # Agregar la carpeta raíz al sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -14,13 +15,14 @@ from Requerimiento3.categorias import keywords
 from Requerimiento3.graficos import plot_bar_chart, generate_wordcloud, plot_cooccurrence_network, cargarPalabras_excel  
 from Requerimiento3.normalizacion_lectura import parse_large_bib, load_bibtex, count_keywords
 
-# Paso 6: Guardar resultados en un archivo Excel
+# Función para guardar los resultados en un archivo Excel
+# Esta función toma un diccionario de datos de palabras clave (categorias) y los almacena en un archivo Excel
 def guardar_keywords_en_excel(keyword_data, output_path):
     df = pd.DataFrame(keyword_data)
     df = df.sort_values(by=["Categoría", "Frecuencia"], ascending=[True, False])
     df.to_excel(output_path, index=False)
 
-# Paso 7: Integrar todo el flujo
+# Función principal que ejecuta el flujo de trabajo
 def main(bib_file_path):
     try:
         # Cargar abstracts

@@ -1,4 +1,20 @@
-# Paso 1: Definir las palabras clave y unificar sinónimos
+""" 
+Esta clase permite categorizar las palabras clave brindadas para la realizacion de proyecto y unificar sinónimos.
+Estas categorias son:
+- Habilidades
+- Conceptos Computacionales
+- Actitudes
+- Propiedades Psicométricas
+- Herramientas de Evaluación
+- Diseño de Investigación
+- Nivel de Escolaridad
+- Medio
+- Estrategias
+- Herramientas Tecnológicas
+"""
+
+
+# Paso 1: Definir las palabras clave brindadas para la realizacion de proyecto y unificar sinónimos
 keywords = {
 
     "Habilidades": {

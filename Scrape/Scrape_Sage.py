@@ -3,6 +3,21 @@ import os
 import re
 import time
 
+"""
+Esta clase se encarga de realizar el web scraping de la SAGE por medio de selectores HTML.
+De esta pagina logramos extraer 2010 articulos con la estrucura de:
+@article{ref1,
+  title = {Title of the article},
+  author = {Author Name},
+  year = {2023},
+  journal = {Journal Name},
+  abstract = {Abstract of the article},
+  url = {https://journals.sagepub.com/doi/abs/10.1177/1234567}
+}
+La función scrape_sage() accede a la página, busca artículos relacionados con "computational thinking",
+y guarda los resultados en un archivo BibTeX.
+"""
+
 # -------------------------------------------------------------
 # USO DE CHATGPT PARA LA ESTRUCTURA DE LOS SCRAPES
 # -------------------------------------------------------------

@@ -2,6 +2,14 @@ import time
 import os
 import re
 
+"""
+Esta clase contiene diferentes métodos de ordenamiento y un método para analizar el tiempo de ejecución de cada uno.
+Los métodos de ordenamiento incluyen: CombSort, SelectionSort, TreeSort, BitonicSort, Pigeonhole Sort, Bucket Sort, Quick Sort, Heap Sort, Gnome Sort y Binary Insertion Sort.
+Los métodos son utilizados para ordenar datos extraídos de un archivo BibTeX.
+El archivo BibTeX es leído y analizado para extraer los campos relevantes, incluyendo el año, título, autor y revista.
+Este fue requerido para el seguimiento 1 de la asignatura de Análisis de Algoritmos.
+"""
+
 # Se define la ruta del archivo BibTeX a partir del directorio actual del script
 file_name = os.path.join(os.path.dirname(__file__), "C:/2025-1/Analisis Algoritmos/Proyecto/Data/unificados.bib")
 

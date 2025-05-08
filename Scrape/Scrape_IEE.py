@@ -3,6 +3,23 @@ import os
 import re
 import time
 
+""" 
+Esta clase se encarga de realizar el web scraping de la IEEE Digital Library por medio de selectores HTML.
+De esta pagina logramos extraer 4600 articulos con la estrucura de:
+@article{ref1,
+  title = {Title of the article},
+  author = {Author Name},
+  year = {2023},
+  journal = {Journal Name},
+  tipo = {Tipo de artículo},
+  publisher = {IEEE},
+  abstract = {Abstract of the article},
+  url = {https://ieeexplore.ieee.org/abstract/document/1234567}
+}
+La función scrape_ieee() accede a la página, busca artículos relacionados con "computational thinking",
+y guarda los resultados en un archivo BibTeX.
+"""
+
 # -------------------------------------------------------------
 # USO DE CHATGPT PARA LA ESTRUCTURA DE LOS SCRAPES
 # -------------------------------------------------------------
@@ -12,7 +29,7 @@ def scrape_ieee():
     # Crear la carpeta "Data" si no existe
     if not os.path.exists("Data"):
         os.makedirs("Data")
-
+    # Iniciar Playwright y abrir el navegador
     with sync_playwright() as p:
         start_time = time.time()
         browser = p.chromium.launch(headless=False)

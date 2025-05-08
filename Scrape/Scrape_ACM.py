@@ -3,6 +3,20 @@ import os
 import re
 import time
 
+""" 
+Esta clase se encarga de realizar el web scraping de la ACM Digital Library por medio de selectores HTML.
+De esta pagina logramos extraer 3720 articulos con la estrucura de:
+@article{ref1,
+  title = {Title of the article},
+  author = {Author Name},
+  year = {2023},
+  journal = {Journal Name},
+  abstract = {Abstract of the article},
+  url = {https://dl.acm.org/doi/abs/10.1145/1234567}
+}
+La función scrape_acm() accede a la página, busca artículos relacionados con "computational thinking",
+y guarda los resultados en un archivo BibTeX.
+"""
 
 # -------------------------------------------------------------
 # USO DE CHATGPT PARA LA ESTRUCTURA DE LOS SCRAPES
@@ -14,6 +28,7 @@ def scrape_acm():
     if not os.path.exists("Data"):
         os.makedirs("Data")
 
+## Iniciar Playwright y abrir el navegador
     with sync_playwright() as p:
         start_time = time.time()
         browser = p.chromium.launch(headless=False)

@@ -2,13 +2,17 @@ import re
 import unicodedata
 from collections import Counter
 from tqdm import tqdm
-import matplotlib.pyplot as plt 
-import bibtexparser
 
-from Requerimiento3.categorias import keywords 
+"""
+Esta clase se encarga de analizar archivos BibTeX grandes y extraer los campos relevantes.
+Incluye el manejo de campos complejos y la normalización de caracteres.
+Al final tambien se encarga de contar las palabras clave en los abstracts extraídos.
+Esta implementación es más robusta y eficiente para archivos grandes.
+"""
 
 
-# Paso 2: Definir funciones de normalización y limpieza
+# Funcion encargada de analizar archivos BibTeX grandes
+# y extraer los campos relevantes, incluyendo el manejo de campos complejos
 def parse_large_bib(file_path):
     """Analiza archivos BibTeX grandes con manejo mejorado de campos y tipos"""
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -50,7 +54,7 @@ def parse_large_bib(file_path):
     
     return entries
 
-# Paso 3: Cargar el archivo BibTeX y extraer abstracts
+# Cargar el archivo BibTeX y extraer abstracts
 def load_bibtex(file_path):
     """Carga el archivo BibTeX usando nuestro parser personalizado"""
     entries = parse_large_bib(file_path)
@@ -72,6 +76,8 @@ def load_bibtex(file_path):
     
     return abstracts
 
+# Función para contar palabras clave en abstracts
+# y devolver un diccionario con la frecuencia de cada palabra clave
 def count_keywords(abstracts, keywords_dict):
     keyword_data = []  # Lista detallada con categoría
     keyword_counts = Counter()  # Dict para conteo rápido compatible con funciones existentes

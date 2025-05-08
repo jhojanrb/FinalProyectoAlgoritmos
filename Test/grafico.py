@@ -3,6 +3,13 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import Normalize
 import os
 
+""" 
+Esta clase tenemos un ejemplo que nos sirvio como base y ejecutar pruebas para realizar el grafico de co-ocurrencia de palabras clave.
+Esta implementación es más robusta y eficiente para archivos grandes.
+El gráfico se genera utilizando la librería NetworkX y se optimiza el diseño para una mejor visualización.
+Aqui realizamos los tests respectivos para el requerimiento 3 de del proyecto de Analisis de Algoritmos.
+"""
+
 def plot_cooccurrence_network_improved(abstracts, keywords_dict, output_path="cooccurrence_improved.png"):
     """Genera un gráfico de co-ocurrencia con diseño optimizado y barra de color asociada."""
     G = nx.Graph()

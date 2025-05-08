@@ -1,15 +1,11 @@
 import matplotlib.pyplot as plt
 import os
-from tqdm import tqdm
 import networkx as nx
 from wordcloud import WordCloud
-from networkx.algorithms import community
 import matplotlib.patheffects as path_effects
 import pandas as pd
 from collections import Counter
 from itertools import combinations
-import matplotlib.cm as cm
-import numpy as np
 import matplotlib.patches as mpatches
 
 
@@ -17,7 +13,9 @@ import matplotlib.patches as mpatches
 ruta_graficos = "C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento3"
 
 
-# Paso 4: Generar una gráfica de barras
+# Funcion para graficar el conteo de palabras clave
+# Esta función toma un diccionario de conteos de palabras clave y genera un gráfico de barras
+# mostrando las 20 palabras clave más frecuentes.
 def plot_bar_chart(keyword_counts):
 
     top_10 = sorted(keyword_counts.items(), key=lambda x: x[1], reverse=True)[:20]
@@ -38,7 +36,8 @@ def plot_bar_chart(keyword_counts):
     plt.savefig(os.path.join(ruta_graficos, "frecuencia_palabras_clave.png"))
     plt.close()
 
-# Paso 5: Generar nube de palabras
+# Función para generar una nube de palabras a partir de los conteos de palabras clave
+# Esta función toma un diccionario de conteos de palabras clave y genera una nube de palabras
 def generate_wordcloud(keyword_counts):
         wordcloud = WordCloud(
         width=1600,              # Mayor resolución horizontal
@@ -58,20 +57,21 @@ def generate_wordcloud(keyword_counts):
         plt.savefig(os.path.join(ruta_graficos, "nube_palabras_clave.png"), dpi=300)  # Alta resolución
         plt.close()
         
-# Función para leer palabras clave y categorías desde un archivo Excel
+# Función para leer palabras clave y categorías desde un archivo Excel 
 def cargarPalabras_excel(file_path):
     df = pd.read_excel(file_path)
     keywords_by_category = df.groupby("Categoría")["Término"].apply(list).to_dict()
     return keywords_by_category
 
-# Paso 6: Generar gráfico de co-ocurrencia
+# Funcion encargada de realizar el grafico de co-occurence network
 def plot_cooccurrence_network(keywords_by_category, min_cooccurrence=1):
     """Generar gráfico de red de co-ocurrencia con categorías."""
 
-    G = nx.Graph()
+    G = nx.Graph() # Crear un grafo vacío
 
     # Contar co-ocurrencias
     co_occurrence = Counter()
+    # Iterar sobre cada categoría y sus palabras clave
     for category, keywords in keywords_by_category.items():
         for kw1, kw2 in combinations(keywords, 2):
             co_occurrence[(kw1, kw2)] += 1
@@ -94,6 +94,7 @@ def plot_cooccurrence_network(keywords_by_category, min_cooccurrence=1):
     # Calcular tamaños por grado ponderado
     degrees = dict(G.degree(weight="weight"))
     max_degree = max(degrees.values()) if degrees else 1
+    # Normalizar tamaños de nodos
     sizes = {node: 100 + 1000 * (deg / max_degree) for node, deg in degrees.items()}
 
     # Layout
@@ -127,4 +128,5 @@ def plot_cooccurrence_network(keywords_by_category, min_cooccurrence=1):
     plt.tight_layout()
     plt.savefig(os.path.join(ruta_graficos, "keyword co-occurrence network.png"))
     plt.close()
+
 

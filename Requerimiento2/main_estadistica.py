@@ -1,10 +1,13 @@
-import re
 import pandas as pd
-from tqdm import tqdm
-from collections import defaultdict
-import unicodedata
 import sys
 import os
+
+"""
+Esta clase se encarga de realizar la ejecucion del script principal para la generación de estadísticas
+a partir de un archivo BibTeX. 
+Además, se encarga de normalizar los datos, generar estadísticas y exportar los resultados a un archivo Excel.
+Muestra el resumen de estadísticas en la consola y genera gráficos a partir de las estadísticas obtenidas.
+"""
 
 # Agregar la carpeta raíz al sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))

@@ -1,13 +1,19 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Datos
+"""
+En esta clase realizamos el grafico de barras para comparar los tiempos de ejecución de diferentes algoritmos de ordenamiento.
+El grafico se realiza utilizando la libreria matplotlib y se escalan los tiempos para que los menores se vean más (logaritmo base 10).
+Este grafico lo utilizamos para el seguimiento 1 de la asignatura de Analisis de Algoritmos.
+"""
+
+# Nombres de los algoritmos
 methods = [
     "TimSort (Python built-in)", "Comb Sort", "Selection Sort", 
     "Tree Sort",  "Pigeonhole Sort", "Bucket Sort", "QuickSort", 
     "HeapSort", "Bitonic Sort", "Gnome Sort",  "Binary Insertion Sort", "RadixSort"
 ]
-
+# Tiempos registrados de los algoritmos
 times = [
     0.02513,  0.259658, 13.479823,
     0.346567, 0.004538,  0.003236, 0.119506,  0.037158,

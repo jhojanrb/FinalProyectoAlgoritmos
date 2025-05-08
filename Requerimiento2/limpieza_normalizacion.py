@@ -3,6 +3,15 @@ import re
 from tqdm import tqdm
 import unicodedata
 
+"""
+Esta clase se encarga de normalizar los datos obtenidos a partir del archivo BibTeX.
+Además, se encarga de limpiar los nombres de revistas y normalizar los autores.
+También se encarga de normalizar los tipos de publicaciones y categorizar en 4 tipos principales:
+Articulo, Conference Paper, Libro y Capitulo de libro.
+"""
+
+# Funcion encargada de analizar archivos BibTeX grandes
+# y extraer los campos relevantes, incluyendo el manejo de campos complejos
 def parse_large_bib(file_path):
     """Analiza archivos BibTeX grandes con manejo mejorado de campos y tipos"""
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -44,6 +53,8 @@ def parse_large_bib(file_path):
     
     return entries
 
+# Funcion encargada de normalizar los tipos de publicaciones
+# y categorizar en 4 tipos principales: Articulo, Conference Paper, Libro y Capitulo de libro
 def normalize_product_type(tipo):
     """
     Normaliza los tipos a 4 categorías principales:
@@ -58,6 +69,7 @@ def normalize_product_type(tipo):
     tipo = str(tipo).lower().strip()
     
     # Mapeo de tipos a categorías principales
+    # Definición de palabras clave para cada categoría
     article_keywords = ['article', 'research', 'review', 'original', 'empirical', 
                        'methodology', 'survey', 'case study', 'commentary', 'editorial',
                        'letter', 'abstract', 'perspective', 'educational', 'narrative',
@@ -72,7 +84,8 @@ def normalize_product_type(tipo):
     
     chapter_keywords = ['chapter', 'capitulo', 'sección', 'section', 'parte', 'summary']
     
-    # Determinar la categoría principal
+    # Determinar la categoría principal basada en las palabras clave
+    # Se utiliza un bucle para verificar si alguna de las palabras clave está presente en el tipo
     for keyword in article_keywords:
         if keyword in tipo:
             return 'Articulo'
@@ -91,6 +104,8 @@ def normalize_product_type(tipo):
     
     return 'Otro'
 
+# Funcion encargada de normalizar los autores
+# y eliminar variaciones de "View all" o "Ver todos"
 def normalize_authors(author_str):
     """Normalización mejorada de autores excluyendo 'View all'"""
     if not author_str or pd.isna(author_str):
@@ -127,6 +142,8 @@ def normalize_authors(author_str):
     
     return normalized
 
+# Funcion encargada de limpiar los nombres de revistas
+# y eliminar caracteres no deseados, espacios en blanco y convertir a título
 def clean_journal_name(name):
     """Limpia nombres de revistas"""
     if not name or pd.isna(name):

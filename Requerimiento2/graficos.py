@@ -3,6 +3,13 @@ import os
 import numpy as np
 import pandas as pd
 
+"""
+Esta clase se encarga de generar gráficos a partir de las estadísticas obtenidas
+y guardarlos en una carpeta específica. 
+"""
+
+# Esta función se encarga de generar gráficos con Matplotlip a partir de las estadísticas obtenidas
+# y guardarlos en una carpeta específica. 
 def generate_and_save_charts(stats, output_folder):
     """Genera gráficos como imágenes PNG y los guarda en la carpeta especificada"""
     
@@ -10,6 +17,7 @@ def generate_and_save_charts(stats, output_folder):
     os.makedirs(output_folder, exist_ok=True)
     
     # 1. Gráfico de Top Autores
+    # Este es un gráfico de barras horizontales que muestra los 15 autores con más publicaciones
     if 'top_15_autores' in stats:
         plt.figure(figsize=(12, 8))
         # Ordenar de mayor a menor y seleccionar los primeros 15
@@ -34,6 +42,8 @@ def generate_and_save_charts(stats, output_folder):
 
     
     # 2. Gráfico de Distribución por Tipo
+    # Este gráfico de pastel muestra la distribución de tipos de publicaciones
+    # Se utiliza un gráfico de pastel para mostrar la proporción de cada tipo de publicación
     if 'tipos_existentes' in stats:
         plt.figure(figsize=(10, 10))
         
@@ -62,6 +72,8 @@ def generate_and_save_charts(stats, output_folder):
 
 
     # 3. Gráfico de Evolución Temporal por Tipo
+    # Este gráfico de barras apiladas muestra la evolución de publicaciones por tipo a lo largo de los años
+    # Se utiliza un gráfico de barras apiladas para mostrar la evolución de publicaciones por tipo a lo largo de los años
     if 'añoPublicacion_Portipo' in stats:
         plt.figure(figsize=(14, 8))
         stats['añoPublicacion_Portipo'].T.plot(
@@ -80,6 +92,7 @@ def generate_and_save_charts(stats, output_folder):
         plt.close()
     
     # 4. Gráfico de Top Journals por Tipo
+    # Este gráfico de barras horizontales apiladas muestra los 15 journals con más publicaciones por tipo
     if 'top15_journals' in stats:
         # Primero obtener una copia de los datos sin la columna Total
         plot_data = stats['top15_journals'].drop(columns=['Total'], errors='ignore').copy()
@@ -123,6 +136,7 @@ def generate_and_save_charts(stats, output_folder):
 
 
     # 5. Gráfico de Top Publishers por Año
+    # Este gráfico de barras horizontales apiladas muestra los 15 publishers con más publicaciones por año
     if 'top15_publishers' in stats:
         # Excluir columna 'Total' para el gráfico
         plot_data = stats['top15_publishers'].drop(columns=['Total'], errors='ignore').head(15)

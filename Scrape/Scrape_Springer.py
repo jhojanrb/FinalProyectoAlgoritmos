@@ -3,6 +3,23 @@ import os
 import re
 import time
 
+"""
+Esta clase se encarga de realizar el web scraping de la SpringerOpen por medio de selectores HTML.
+De esta pagina logramos extraer 2720 artículos con la estructura de:
+@article{ref1,
+  title = {Title of the article},
+  author = {Author Name},
+  year = {2023},
+  journal = {Journal Name},
+  tipo = {Tipo de contenido},
+  publisher = {Publisher Name},
+  abstract = {Abstract of the article},
+  url = {https://doi.org/10.1007/s12345-023-00001-0}
+}
+La función scrape_springer_open() accede a la página, busca artículos relacionados con "computational thinking",
+y guarda los resultados en un archivo BibTeX.
+"""
+
 # -------------------------------------------------------------
 # USO DE CHATGPT PARA LA ESTRUCTURA DE LOS SCRAPES
 # -------------------------------------------------------------
