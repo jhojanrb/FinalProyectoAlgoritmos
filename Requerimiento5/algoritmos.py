@@ -18,7 +18,7 @@ def tfidf_similarity(abstracts):
     vectorizer = TfidfVectorizer(
         max_features=5000,       # Limitar el vocabulario a las 5K palabras más frecuentes
         ngram_range=(1, 3),      # Incluir unigramas, bigramas y trigramas
-        stop_words='english'     # Eliminar stopwords (redundante con preprocess, pero útil)
+        stop_words='english'     # Eliminar stopwords
     )
     tfidf_matrix = vectorizer.fit_transform(processed_abstracts) # Calcular matriz TF-IDF
     return cosine_similarity(tfidf_matrix) 
@@ -29,10 +29,10 @@ def doc2vec_similarity(abstracts, save_model=True):
     tagged_data = [TaggedDocument(preprocess(ab), [str(i)]) for i, ab in enumerate(abstracts)] # Etiquetar documentos
     
     model = Doc2Vec(
-        vector_size=100,
-        min_count=2,
-        epochs=20,               # Reducir epochs para velocidad (20 suele ser suficiente)
-        dm=1,
+        vector_size=100,         # Dimensionalidad del vector de características
+        min_count=2,             # Ignorar palabras que aparecen menos de 2 veces
+        epochs=20,               # Reducir epochs para velocidad iteraciones
+        dm=1,                    # Usar Distributed Memory (DM)
         workers=4                # Paralelizar en 4 núcleos
     )
     model.build_vocab(tagged_data) # Construir vocabulario
@@ -44,7 +44,7 @@ def doc2vec_similarity(abstracts, save_model=True):
     # Calcular similitud solo para los top N más similares (ej: top 1000)
     top_n = 1000
     similarity_matrix = []
-    for i in range(len(abstracts)):
+    for i in range(len(abstracts)): # cada i obtiene su similitud
         sims = model.dv.most_similar(str(i), topn=top_n)
         similarity_matrix.append(sims)  # Guardar (índice, similitud) en lugar de matriz completa
     

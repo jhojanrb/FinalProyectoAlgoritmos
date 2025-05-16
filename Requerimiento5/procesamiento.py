@@ -39,7 +39,7 @@ def compare_models_and_save(abstracts, top_k=5, tfidf_similarity_func=None, doc2
     total_docs = len(abstracts)
 
     # Porcentajes totales de similitud
-    porcentaje_totaltfidf = (tfidf_total_sum / (total_docs * (total_docs - 1))) * 100
+    porcentaje_totaltfidf = (tfidf_total_sum / (total_docs * (total_docs - 1))) * 100 # dividir entre el total de documentos menos 1 para evitar la autosimilitud
     porcentaje_total2vec = (doc2vec_total_sum / (total_docs * (total_docs - 1))) * 100
 
     most_similar_tfidf_index = np.argmax(tfidf_sums)

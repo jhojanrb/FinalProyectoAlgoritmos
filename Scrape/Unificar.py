@@ -4,7 +4,7 @@ import os
 # USO DE CHATGPT PARA LA LECTURA CORRECTA DEL BIBTEXT
 # -------------------------------------------------------------
 
-# función para leer archivos BibTeX y convertirlos en una lista de diccionarios
+# función para leer archivos BibTeX  y convertirlos en una lista de diccionarios
 def read_bibtex(filename):
     """Leer un archivo BibTeX y convertirlo en una lista de diccionarios."""
     articles = []
@@ -33,7 +33,8 @@ def read_bibtex(filename):
 # USO DE CHATGPT PARA INVESTIGAR EL MANEJO DE ARCHIVOS DUPLICADOS Y UNIFICAR
 # -----------------------------------------------------------------------------
 
-# función para unificar resultados de varios archivos BibTeX
+# función para unificar resultados de varios archivos BibTeX luego del scraping
+# y guardar los resultados en un archivo BibTeX
 def unify_results_from_files(*filenames):
     """Unificar resultados a partir de varios archivos BibTeX."""
     datasets = [read_bibtex(filename) for filename in filenames]
@@ -67,6 +68,8 @@ def unify_results_from_files(*filenames):
 # USO DE CHATGPT PARA LA ESTRUCTURA DE GUARDADO
 # -------------------------------------------------------------
 
+# Esta funcion se encarga de guardar los artículos en un archivo BibTeX
+# y se utiliza para guardar tanto los artículos únicos.
 def save_bibtex(filename, articles):
     """Guardar artículos en formato BibTeX."""
     try:
@@ -100,6 +103,8 @@ def save_bibtex(filename, articles):
 # USO DE CHATGPT PARA LA ESTRUCTURA DE GUARDADO
 # -------------------------------------------------------------
 
+# Esta funcion se encarga de guardar los duplicados en un archivo BibTeX 
+# y se utiliza para guardar tanto los artículos duplicados.
 def save_duplicates(filename, duplicates):
     """Guardar duplicados en formato BibTeX con información de las páginas compartidas."""
     try:

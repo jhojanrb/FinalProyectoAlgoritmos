@@ -115,7 +115,6 @@ def preprocess(text):
 
 # --------------------------- ALGORITMOS --------------------------- #
 
-
 # Función para calcular la similitud TF-IDF
 # Esta función calcula la similitud entre abstracts utilizando el modelo TF-IDF.
 def tfidf_similarity(abstracts):
