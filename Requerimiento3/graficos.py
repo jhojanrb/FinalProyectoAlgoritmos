@@ -7,6 +7,7 @@ import pandas as pd
 from collections import Counter
 from itertools import combinations
 import matplotlib.patches as mpatches
+import tempfile
 
 
 # Ruta donde se guardarán los gráficos
@@ -16,12 +17,13 @@ ruta_graficos = "C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento
 # Funcion para graficar el conteo de palabras clave
 # Esta función toma un diccionario de conteos de palabras clave y genera un gráfico de barras
 # mostrando las 20 palabras clave más frecuentes.
-def plot_bar_chart(keyword_counts):
-
-    top_10 = sorted(keyword_counts.items(), key=lambda x: x[1], reverse=True)[:20]
+def plot_bar_chart(keyword_counts, temp_dir):
+    
+    top_20 = sorted(keyword_counts.items(), key=lambda x: x[1], reverse=True)[:20]
+    
     # Separar claves y valores
-    keywords = [item[0] for item in top_10]
-    counts = [item[1] for item in top_10]
+    keywords = [item[0] for item in top_20]
+    counts = [item[1] for item in top_20]
 
     plt.figure(figsize=(12, 6))
     plt.barh(keywords, counts, color="skyblue")
@@ -33,12 +35,16 @@ def plot_bar_chart(keyword_counts):
     plt.xlabel("Frecuencia")
     plt.title("Top 20 - Frecuencia de Palabras Clave")
     plt.tight_layout()
-    plt.savefig(os.path.join(ruta_graficos, "frecuencia_palabras_clave.png"))
+    # Guardar la figura en el directorio temporal
+    temp_file_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png", dir=temp_dir).name
+    plt.savefig(temp_file_path)
     plt.close()
+
+    return temp_file_path  # Retornar la ruta del archivo guardado
 
 # Función para generar una nube de palabras a partir de los conteos de palabras clave
 # Esta función toma un diccionario de conteos de palabras clave y genera una nube de palabras
-def generate_wordcloud(keyword_counts):
+def generate_wordcloud(keyword_counts, temp_dir):
         wordcloud = WordCloud(
         width=1600,              # Mayor resolución horizontal
         height=800,              # Mayor resolución vertical
@@ -54,8 +60,12 @@ def generate_wordcloud(keyword_counts):
         plt.imshow(wordcloud, interpolation="bilinear")
         plt.axis("off")
         plt.tight_layout(pad=0)
-        plt.savefig(os.path.join(ruta_graficos, "nube_palabras_clave.png"), dpi=300)  # Alta resolución
+
+        temp_file_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png", dir=temp_dir).name
+        plt.savefig(temp_file_path)  # Alta resolución
         plt.close()
+
+        return temp_file_path
         
 # Función para leer palabras clave y categorías desde un archivo Excel 
 def cargarPalabras_excel(file_path):
@@ -64,7 +74,7 @@ def cargarPalabras_excel(file_path):
     return keywords_by_category
 
 # Funcion encargada de realizar el grafico de co-occurence network
-def plot_cooccurrence_network(keywords_by_category, min_cooccurrence=1):
+def plot_cooccurrence_network(keywords_by_category, temp_dir, min_cooccurrence=1):
     """Generar gráfico de red de co-ocurrencia con categorías."""
 
     G = nx.Graph() # Crear un grafo vacío
@@ -126,7 +136,11 @@ def plot_cooccurrence_network(keywords_by_category, min_cooccurrence=1):
     plt.title("Red de Co-Ocurrencia de Palabras Clave por Categorías", fontsize=18)
     plt.axis("off")
     plt.tight_layout()
-    plt.savefig(os.path.join(ruta_graficos, "keyword co-occurrence network.png"))
+    # Guardar la figura en el directorio temporal
+    temp_file_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png", dir=temp_dir).name
+    plt.savefig(temp_file_path)
     plt.close()
+
+    return temp_file_path  # Retornar la ruta del archivo guardado
 
 

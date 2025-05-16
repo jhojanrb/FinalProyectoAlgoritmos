@@ -9,6 +9,8 @@ from Scrape.Unificar import read_bibtex, unify_results_from_files, save_bibtex, 
 def unification_view():
     """Vista para la unificación de archivos BibTeX."""
     st.title("Unificación y Detección de Duplicados en Archivos BibTeX")
+    st.subheader("Sube los archivos generados durante el web scraping para unificarlos y detectar duplicados.")
+    st.write("Asegúrate de que los archivos estén en formato BibTeX y que sean exactamente 4 archivos.")
 
     # Botón para volver al home
     if st.button("Volver al Home"):

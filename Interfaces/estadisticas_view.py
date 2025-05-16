@@ -12,6 +12,15 @@ from Requerimiento2.generar_estadisticas import generate_statistics, save_statis
 
 def estadisticas_view():
     st.title("Generación de Estadísticas y Gráficos")
+    st.subheader("En esta sección puedes subir un archivo BibTeX y generar estadísticas y gráficos a partir de él.")
+    st.write("Las estadísticas generadas incluyen:")
+    st.write("- Total de publicaciones")
+    st.write("- Distribución por tipo de publicación")
+    st.write("- Evolución de publicaciones por tipo")
+    st.write("- 15 autor(es) más frecuentes")
+    st.write("- 15 journal(s) más frecuentes")
+    st.write("- 15 publisher(s) más frecuentes")
+ 
 
     # Botón para volver al home
     if st.button("Volver al Home"):
@@ -22,7 +31,7 @@ def estadisticas_view():
     
     try:
         # Selección del archivo
-        uploaded_file = st.file_uploader("Sube un archivo BibTeX", type=["bib"])
+        uploaded_file = st.file_uploader("Sube el archivo BibTeX unificados", type=["bib"])
         if uploaded_file:
             file_path = os.path.join(temp_dir, uploaded_file.name)
 
