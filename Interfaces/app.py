@@ -1,5 +1,9 @@
 import streamlit as st
 
+import nltk
+nltk.download('stopwords')
+
+
 # Importamos las vistas para llamar sus funciones
 from home import home_view
 from unificacion import unification_view
