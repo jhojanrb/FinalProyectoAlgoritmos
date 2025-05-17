@@ -1,10 +1,15 @@
 import streamlit as st
 import os
 import sys
+import pkg_resources
 
 # Importar funciones necesarias
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from Scrape.Unificar import read_bibtex, unify_results_from_files, save_bibtex, save_duplicates
+
+# Para archivos dentro del paquete Data
+def get_bibtex_file(filename):
+    return pkg_resources.resource_filename('Data', filename)
 
 def unification_view():
     """Vista para la unificación de archivos BibTeX."""
@@ -18,14 +23,12 @@ def unification_view():
     )
 
     st.subheader("Si no tienes los archivos BibTeX del Web Scraping, los puedes descargar a continuación")
-    
-    # Ruta a los archivos BibTeX en tu sistema
-    base_path = "C:/2025-1/Analisis AlgoritmosProyectoFinal/FinalProyectoAlgoritmos/Data/resultados_ACM.bib"
+
     bibtex_files = {
-        "resultados_ACM.bib": os.path.join(base_path, "resultados_ACM.bib"),
-        "resultados_ieee.bib": os.path.join(base_path, "resultados_ieee.bib"),
-        "resultados_springer_open.bib": os.path.join(base_path, "resultados_springer_open.bib"),
-        "resultados_Sage.bib": os.path.join(base_path, "resultados_Sage.bib")
+        "resultados_ACM.bib": get_bibtex_file("resultados_ACM.bib"),
+        "resultados_ieee.bib": get_bibtex_file("resultados_ieee.bib"),
+        "resultados_springer_open.bib": get_bibtex_file("resultados_springer_open.bib"),
+        "resultados_Sage.bib": get_bibtex_file("resultados_Sage.bib")
     }
 
     for filename, filepath in bibtex_files.items():
