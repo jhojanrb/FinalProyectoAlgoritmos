@@ -2,6 +2,9 @@ import streamlit as st
 
 import nltk
 nltk.download('stopwords')
+nltk.download('wordnet')
+nltk.download('omw-1.4')  # Dependencia de WordNet
+
 
 
 # Importamos las vistas para llamar sus funciones
