@@ -38,8 +38,8 @@ def doc2vec_similarity(abstracts, save_model=True):
     model.build_vocab(tagged_data) # Construir vocabulario
     model.train(tagged_data, total_examples=model.corpus_count, epochs=model.epochs) # Entrenar modelo
     
-    if save_model:
-        model.save("C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/doc2vec_model.model")  # Guardar modelo para reutilizar
+    #if save_model:
+       # model.save("C:/2025-1/Analisis Algoritmos/Proyecto/Data/Datos Requerimiento5/doc2vec_model.model")  # Guardar modelo para reutilizar
     
     # Calcular similitud solo para los top N más similares (ej: top 1000)
     top_n = 1000
