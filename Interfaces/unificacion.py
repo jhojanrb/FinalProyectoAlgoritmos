@@ -19,21 +19,26 @@ def unification_view():
 
     st.subheader("Si no tienes los archivos BibTeX del Web Scraping, los puedes descargar a continuación")
     
-    # Archivos BibTeX predefinidos
+    # Ruta a los archivos BibTeX en tu sistema
+    base_path = "C:/2025-1/Analisis Algoritmos/ProyectoFinal/FinalProyectoAlgoritmos/Data"
     bibtex_files = {
-        "resultados_ACM.bib": "Contenido de ejemplo para ACM BibTeX.",
-        "resultados_ieee.bib": "Contenido de ejemplo para IEEE BibTeX.",
-        "resultados_springer_open.bib": "Contenido de ejemplo para Springer Open BibTeX.",
-        "resultados_Sage.bib": "Contenido de ejemplo para Sage BibTeX."
+        "resultados_ACM.bib": os.path.join(base_path, "resultados_ACM.bib"),
+        "resultados_ieee.bib": os.path.join(base_path, "resultados_ieee.bib"),
+        "resultados_springer_open.bib": os.path.join(base_path, "resultados_springer_open.bib"),
+        "resultados_Sage.bib": os.path.join(base_path, "resultados_Sage.bib")
     }
 
-    for filename, content in bibtex_files.items():
-        st.download_button(
-            label=f"Descargar {filename}",
-            data=content,
-            file_name=filename,
-            mime="text/plain"
-        )
+    for filename, filepath in bibtex_files.items():
+        if os.path.exists(filepath):
+            with open(filepath, "r", encoding="utf-8") as file:
+                st.download_button(
+                    label=f"Descargar {filename}",
+                    data=file.read(),
+                    file_name=filename,
+                    mime="text/plain"
+                )
+        else:
+            st.warning(f"El archivo {filename} no existe en la ruta especificada.")
 
     if uploaded_files and len(uploaded_files) == 4:
         st.success("Archivos cargados correctamente. Procesando...")
