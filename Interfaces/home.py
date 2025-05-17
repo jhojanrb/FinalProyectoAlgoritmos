@@ -17,5 +17,5 @@ def home_view():
         st.session_state.current_view = "estadisticas"
     if st.button("Categorias y sus variables"):
         st.session_state.current_view = "categorias"
-    if st.button("Funcionalidad 4"):
-        st.session_state.current_view = "function4"
+    if st.button("Similitud de Abstracts"):
+        st.session_state.current_view = "similitud"
