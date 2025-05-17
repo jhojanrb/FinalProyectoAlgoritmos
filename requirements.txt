@@ -1,0 +1,11 @@
+streamlit
+pandas
+scikit-learn
+gensim
+matplotlib
+scipy
+nltk
+tqdm
+numpy
+networkx
+wordcloud
