@@ -1,7 +1,7 @@
 import streamlit as st
 import os
 import sys
-import pkg_resources
+from importlib import resources
 
 # Importar funciones necesarias
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
@@ -9,7 +9,12 @@ from Scrape.Unificar import read_bibtex, unify_results_from_files, save_bibtex, 
 
 # Para archivos dentro del paquete Data
 def get_bibtex_file(filename):
-    return pkg_resources.resource_filename('Data', filename)
+    try:
+        with resources.path('Data', filename) as filepath:
+            return str(filepath)
+    except Exception as e:
+        st.error(f"Error al encontrar {filename}: {str(e)}")
+        return None
 
 def unification_view():
     """Vista para la unificación de archivos BibTeX."""
