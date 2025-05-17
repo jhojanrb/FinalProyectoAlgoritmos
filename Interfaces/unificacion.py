@@ -18,6 +18,24 @@ def unification_view():
         "Sube los 4 archivos BibTeX que se generaron durante el web_scrapping", type=["bib"], accept_multiple_files=True
     )
 
+    st.subheader("Si no tienes los archivos BibTex del Web Scrapping, los puedes descargar a continución")
+    
+    # Archivos BibTeX predefinidos
+    bibtex_files = {
+        "resultados_ACM.bib": "Contenido de ejemplo para ACM BibTeX.",
+        "resultados_ieee.bib": "Contenido de ejemplo para IEEE BibTeX.",
+        "resultados_springer_open.bib": "Contenido de ejemplo para Springer Open BibTeX.",
+        "resultados_Sage.bib": "Contenido de ejemplo para Sage BibTeX."
+    }
+
+    for filename, content in bibtex_files.items():
+        st.download_button(
+            label=f"Descargar {filename}",
+            data=content,
+            file_name=filename,
+            mime="text/plain"
+        )
+
     if uploaded_files and len(uploaded_files) == 4:
         st.success("Archivos cargados correctamente. Procesando...")
 
