@@ -20,7 +20,7 @@ def unification_view():
     st.subheader("Si no tienes los archivos BibTeX del Web Scraping, los puedes descargar a continuación")
     
     # Ruta a los archivos BibTeX en tu sistema
-    base_path = "C:/2025-1/Analisis Algoritmos/ProyectoFinal/FinalProyectoAlgoritmos/Data"
+    base_path = "C:/2025-1/Analisis AlgoritmosProyectoFinal/FinalProyectoAlgoritmos/Data/resultados_ACM.bib"
     bibtex_files = {
         "resultados_ACM.bib": os.path.join(base_path, "resultados_ACM.bib"),
         "resultados_ieee.bib": os.path.join(base_path, "resultados_ieee.bib"),
