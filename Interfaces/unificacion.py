@@ -35,7 +35,6 @@ def unification_view():
             mime="text/plain"
         )
 
-    st.write("Asegurate de subir exactamente los 4 archivos para asi generar los duplicados y unificados")
     if uploaded_files and len(uploaded_files) == 4:
         st.success("Archivos cargados correctamente. Procesando...")
 
