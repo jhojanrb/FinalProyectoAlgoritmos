@@ -19,9 +19,6 @@ def categorias_view():
     st.write("Con base en ciertas categorias y variables, se presentaran los resultados de la frecuencia de estas mismas en los abstracts de los documentos subidos.")
     st.write("Se generará un archivo Excel con las frecuencias de palabras clave y se mostrarán gráficos de barras, nube de palabras y red de co-ocurrencia.")
 
-    # Boton para regresar a la vista de inicio
-    if st.button("Regresar a la vista de inicio"):
-        st.session_state.current_view = "home"
     
     # Cargar archivo BibTeX
     uploaded_file = st.file_uploader("Sube el archivo BibTeX unificados", type=["bib"])
@@ -77,20 +74,22 @@ def categorias_view():
             )
             
             # Graficar resultados
-            st.subheader("Gráficos Generados")
+            st.header("Gráficos Generados")
             
             # Gráfico de barras
-            st.write("Gráfico de Barras: Este grafico muestra el top 20 de palabras clave y su frecuencia.")
+            st.subheader("Gráfico de Barras")
+            st.write("Este grafico muestra el top 20 de palabras clave y su frecuencia.")
             temp_file = plot_bar_chart(keyword_counts, temp_dir)
             st.image(temp_file, caption="Top 20 - Frecuencia de Palabras Clave", use_container_width=True)
 
             # Nube de palabras
-            st.write("Nube de Palabras")
+            st.subheader("Nube de Palabras")
             temp_file_wc = generate_wordcloud(keyword_counts, temp_dir)
             st.image(temp_file_wc, caption="Nube de Palabras", use_container_width=True)
 
             # Red de co-ocurrencia
-            st.write("Red de Co-ocurrencia: Este grafico muestra la co-ocurrencia de palabras clave en los abstracts.")
+            st.subheader("Red de Co-ocurrencia")
+            st.write("Este grafico muestra la co-ocurrencia de palabras clave en los abstracts.")
             keywords_by_category = cargarPalabras_excel(output_excel)
             temp_file_net = plot_cooccurrence_network(keywords_by_category, temp_dir)
             st.image(temp_file_net, caption="Red de Co-ocurrencia", use_container_width=True)
@@ -105,3 +104,7 @@ def categorias_view():
                 os.rmdir(temp_dir)
             except Exception as e:
                 st.error(f"No se pudieron limpiar los archivos temporales: {str(e)}")
+
+    # Boton para regresar a la vista de inicio
+    if st.button("Volver al Home"):
+        st.session_state.current_view = "home"

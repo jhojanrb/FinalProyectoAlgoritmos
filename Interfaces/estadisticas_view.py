@@ -22,10 +22,6 @@ def estadisticas_view():
     st.write("- 15 publisher(s) más frecuentes")
  
 
-    # Botón para volver al home
-    if st.button("Volver al Home"):
-        st.session_state.current_view = "home"
-
     # Crear directorio temporal con tempfile (manejo más seguro)
     temp_dir = tempfile.mkdtemp()
     
@@ -118,3 +114,7 @@ def estadisticas_view():
             shutil.rmtree(temp_dir, ignore_errors=True)
         except Exception as e:
             st.warning(f"No se pudo limpiar completamente el directorio temporal: {str(e)}")
+
+    # Botón para volver al home
+    if st.button("Volver al Home"):
+        st.session_state.current_view = "home"

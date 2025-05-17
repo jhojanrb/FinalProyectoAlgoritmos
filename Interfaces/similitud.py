@@ -61,10 +61,7 @@ def main():
     st.subheader("En este apartado, vamos a comparar los abstracts utilizando los algoritmos Tf-Idf y Doc2Vec")
     st.write("Comparamos inicialmente la similitud por batches Tf-Idf, se puede generar un dendograma a partir de  esta, calcular los clusters y finalmente comparar estos dos algoritmos")
     
-    # Boton de home
-    # Botón para volver al home
-    if st.button("Volver al Home"):
-        st.session_state.current_view = "home"
+    
 
     # Subir archivo BibTeX
     uploaded_file = st.file_uploader("Sube un archivo BibTeX", type=["bib"])
@@ -191,6 +188,10 @@ def main():
             for file in os.listdir(temp_dir):
                 os.remove(os.path.join(temp_dir, file))
             os.rmdir(temp_dir)
+
+    # Botón para volver al home
+    if st.button("Volver al Home"):
+        st.session_state.current_view = "home"
 
 if __name__ == "__main__":
     main()

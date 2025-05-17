@@ -12,10 +12,7 @@ def unification_view():
     st.subheader("Sube los archivos generados durante el web scraping para unificarlos y detectar duplicados.")
     st.write("Asegúrate de que los archivos estén en formato BibTeX y que sean exactamente 4 archivos.")
 
-    # Botón para volver al home
-    if st.button("Volver al Home"):
-        st.session_state.current_view = "home"
-
+    
     # Subida de archivos
     uploaded_files = st.file_uploader(
         "Sube los 4 archivos BibTeX que se generaron durante el web_scrapping", type=["bib"], accept_multiple_files=True
@@ -58,3 +55,7 @@ def unification_view():
             os.remove(file_path)
     else:
         st.info("Por favor, sube exactamente 4 archivos BibTeX para procesarlos.")
+
+    # Botón para volver al home
+    if st.button("Volver al Home"):
+        st.session_state.current_view = "home"
