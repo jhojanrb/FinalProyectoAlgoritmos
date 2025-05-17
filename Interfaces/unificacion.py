@@ -35,8 +35,8 @@ def unification_view():
             mime="text/plain"
         )
 
-    if uploaded_files and len(uploaded_files) > 1:
-        st.success(f"{len(uploaded_files)} archivos cargados correctamente. Procesando...")
+    if uploaded_files and len(uploaded_files) == 4:
+        st.success("Archivos cargados correctamente. Procesando...")
 
         # Crear directorio temporal para los archivos
         temp_dir = "temp_bib"
@@ -70,9 +70,9 @@ def unification_view():
         # Limpiar archivos temporales
         for file_path in file_paths:
             os.remove(file_path)
-        os.rmdir(temp_dir)
     else:
-        st.warning("Por favor, sube al menos 2 archivos BibTeX para procesarlos.")
+        st.info("Por favor, sube exactamente 4 archivos BibTeX para procesarlos.")
+
 
     # Botón para volver al home
     if st.button("Volver al Home"):
