@@ -10,15 +10,14 @@ def unification_view():
     """Vista para la unificación de archivos BibTeX."""
     st.title("Unificación y Detección de Duplicados en Archivos BibTeX")
     st.subheader("Sube los archivos generados durante el web scraping para unificarlos y detectar duplicados.")
-    st.write("Asegúrate de que los archivos estén en formato BibTeX y que sean exactamente 4 archivos.")
+    st.write("Asegúrate de que los archivos estén en formato BibTeX.")
 
-    
     # Subida de archivos
     uploaded_files = st.file_uploader(
-        "Sube los 4 archivos BibTeX que se generaron durante el web_scrapping", type=["bib"], accept_multiple_files=True
+        "Sube los archivos BibTeX que se generaron durante el web scraping", type=["bib"], accept_multiple_files=True
     )
 
-    st.subheader("Si no tienes los archivos BibTex del Web Scrapping, los puedes descargar a continución")
+    st.subheader("Si no tienes los archivos BibTeX del Web Scraping, los puedes descargar a continuación")
     
     # Archivos BibTeX predefinidos
     bibtex_files = {
@@ -36,8 +35,8 @@ def unification_view():
             mime="text/plain"
         )
 
-    if uploaded_files and len(uploaded_files) == 4:
-        st.success("Archivos cargados correctamente. Procesando...")
+    if uploaded_files and len(uploaded_files) > 1:
+        st.success(f"{len(uploaded_files)} archivos cargados correctamente. Procesando...")
 
         # Crear directorio temporal para los archivos
         temp_dir = "temp_bib"
@@ -71,8 +70,9 @@ def unification_view():
         # Limpiar archivos temporales
         for file_path in file_paths:
             os.remove(file_path)
+        os.rmdir(temp_dir)
     else:
-        st.info("Por favor, sube exactamente 4 archivos BibTeX para procesarlos.")
+        st.warning("Por favor, sube al menos 2 archivos BibTeX para procesarlos.")
 
     # Botón para volver al home
     if st.button("Volver al Home"):
